@@ -1,2 +1,5 @@
-# humming_bird
-Creating 
+# Using GitHub API to analyse organisations
+## Setup
+```python
+
+```
