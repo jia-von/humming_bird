@@ -2,7 +2,7 @@ import requests
 import json
 import pandas as pd
 
-# 1. Use pandas to return dataframe objects with columns, id, login, and url
+# 1. Use pandas to return dataframe objects with column: url
 def scrape_org(api_url):
     url = requests.get(api_url).text
     read_json = pd.read_json(url)

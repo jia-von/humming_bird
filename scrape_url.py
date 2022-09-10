@@ -3,11 +3,7 @@ from sqlalchemy import create_engine
 from sql_alchemy import db_connection
 
 # create sqlalchemy engine
-# Scrape URL and update the database
-# read connection parameters
 engine = create_engine(db_connection)
-
-# Create table code block
 
 # connect to the PostgreSQL server
 with engine.connect() as conn:
