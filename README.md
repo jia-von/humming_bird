@@ -3,10 +3,16 @@ This project was created out of my desire to automate my job search using GitHub
 
 ## Setup
 Backend uses PostgreSQL Database.
-Required modules to be installed in `venv`:
+Apache Airflow to schedule tasks.
 
-```python
-pip install sqlalchemy
-pip install pandas
-pip install psycopg2
+```bash
+# Clone the repository
+git clone https://github.com/jia-von/humming_bird.git
+cd humming_bird
+
+# Set up a Python virtual environment, venv
+python -m venv venv
+
+# Install packages
+pip install sqlalchemy pandas psycopg2 apache-airflow apache-airflow-providers-postgres
 ```
