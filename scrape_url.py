@@ -23,8 +23,12 @@ while i < 10:
         if inspect(engine).has_table('github_url'):
             result_org = scrape_org(api_url)
             result_org.to_sql('github_url',schema='public', con=conn, index=False, if_exists='append')
+            
+            # obtain header link for the next pagination
             api_url = link_head(api_url)
             i += 1
+
+            # obtain information in regards to the last pagination before the sequence ends.
             print(api_url)
         else:
             # create 'github_url' if does not exist
@@ -38,8 +42,3 @@ while i < 10:
             api_url = link_head(api_url)
             i += 1
             print(api_url)
-    
-         
-
-
-# Step 2: Obtain header link to paginate to the next page
