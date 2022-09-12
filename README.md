@@ -5,6 +5,7 @@ This project was created out of my desire to automate my job search using GitHub
 1. Create a Python [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#). 
 2. Setup [PostgreSQL database](https://www.postgresql.org/download/linux/ubuntu/). 
 3. Setup [Apache Airflow](https://airflow.apache.org/docs/apache-airflow/stable/start/local.html).
+4. [DBeaver](https://dbeaver.io/) was used to view database via UI.
 
 ```bash
 # Clone the repository

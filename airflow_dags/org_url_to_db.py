@@ -1,5 +1,8 @@
 # The DAG object; we'll need this to instantiate a DAG
 from distutils.command.upload import upload
+from operator import index
+from posixpath import split
+from wsgiref.util import request_uri
 from airflow import DAG
 
 
@@ -27,12 +30,15 @@ with DAG(
 
         def scrape_org(api_url):
             url = requests.get(api_url).text
-            read_json = pd.read_json(url)
+
+            # Following response schema provided by GitHub: https://docs.github.com/en/rest/orgs/orgs
+            # User orient=''index ==>  ``'records'`` : list like ``[{{column -> value}}, ... , {{column -> value}}]``
+            read_json = pd.read_json(url,orient='index')
             return read_json['url']
 
-        # def link_head(api_url):
-        #     dict_head = requests.head(api_url).links['next']
-        #     return dict_head['url']
+        def link_head(api_url):
+            dict_head = requests.head(api_url).links['next']
+            return dict_head['url']
 
         db_connection = 'postgresql+psycopg2://airflow_user:airflow_pass@localhost:5432/github'
         api_url = 'https://api.github.com/organizations?per_page=100'
@@ -42,22 +48,24 @@ with DAG(
 
         while i < 10:
             with engine.connect() as conn:
-                if inspect(engine).has_table('github_url'):
+                if requests.get(api_url).headers['x-ratelimit-limit'] == '60':
+                    print('Max response has achieved')
+                elif inspect(engine).has_table('github_url'):
                     result_org = scrape_org(api_url)
                     result_org.to_sql('github_url',schema='public',index=False, con=conn, if_exists='append')
-                    # api_url = link_head(api_url)
+                    api_url = link_head(api_url)
                     i += 1
-                    # print(api_url)
+                    print(api_url)
                 else:
-                        engine.execute('CREATE TABLE github_url (url varchar)')
-                        result_org = scrape_org(api_url)
-                        result_org.to_sql('github_url',schema='public', con=conn,index=False, if_exists='append')
-                        # api_url = link_head(api_url)
-                        i += 1
-                        # print(api_url)
+                    engine.execute('CREATE TABLE github_url (url varchar)')
+                    result_org = scrape_org(api_url)
+                    result_org.to_sql('github_url',schema='public', con=conn,index=False, if_exists='append')
+                    api_url = link_head(api_url)
+                    i += 1
+                    print(api_url)
 
 
     run_scrape_org = PythonOperator(
-        task_id='run scrape_org',
+        task_id='run_scrape_org',
         python_callable=upload_scrape_org() 
     )

@@ -1,4 +1,3 @@
-from os import link
 from scrape_organisation import link_head, scrape_org
 from sqlalchemy import create_engine, inspect
 from sql_alchemy import db_connection
