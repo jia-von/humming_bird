@@ -1,3 +1,4 @@
+import requests
 from scrape_organisation import link_head, scrape_org
 from sqlalchemy import create_engine, inspect
 from sql_alchemy import db_connection
@@ -11,24 +12,24 @@ i = 0
 engine = create_engine(db_connection)
 
 # GitHub on allow 60 calls perhour for public API
-while i < 10:
+while i < int(requests.get(api_url).headers['x-ratelimit-limit']):
     # Step 1: Initiate creation of table and inserting first row
     # connect to the PostgreSQL server
     # Refer: https://docs.sqlalchemy.org/en/14/dialects/postgresql.html#server-side-cursors
     with engine.connect() as conn:
-
-    # If table 'github_url' exists, append table
-    # Refer: https://docs.sqlalchemy.org/en/14/core/reflection.html?highlight=inspector+has_table#fine-grained-reflection-with-inspector
-        if inspect(engine).has_table('github_url'):
+        if int(requests.get(api_url).headers['x-ratelimit-remaining']) == 1:
+            
+            # obtain information in regards to the last pagination before the sequence ends.
+            print(api_url)
+            # If table 'github_url' exists, append table
+            # Refer: https://docs.sqlalchemy.org/en/14/core/reflection.html?highlight=inspector+has_table#fine-grained-reflection-with-inspector
+        elif inspect(engine).has_table('github_url'):
             result_org = scrape_org(api_url)
-            result_org.to_sql('github_url',schema='public', con=conn, index=False, if_exists='append')
+            result_org.to_sql('github_url',schema='github_progress', con=conn, index=False, if_exists='append')
             
             # obtain header link for the next pagination
             api_url = link_head(api_url)
             i += 1
-
-            # obtain information in regards to the last pagination before the sequence ends.
-            print(api_url)
         else:
             # create 'github_url' if does not exist
             engine.execute('''
@@ -37,7 +38,6 @@ while i < 10:
             )
             ''')
             result_org = scrape_org(api_url)
-            result_org.to_sql('github_url',schema='public', con=conn, index=False, if_exists='append')
+            result_org.to_sql('github_url',schema='github_progress', con=conn, index=False, if_exists='append')
             api_url = link_head(api_url)
             i += 1
-            print(api_url)

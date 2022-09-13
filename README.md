@@ -21,3 +21,4 @@ source venv/bin/activate
 # Install packages
 pip install sqlalchemy pandas psycopg2 apache-airflow apache-airflow-providers-postgres
 ```
+### PostreSQL Attributes for Setup
