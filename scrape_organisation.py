@@ -21,7 +21,7 @@ def get_org_info(git_org_url):
     final_output = pd.Series(read_json,index=['name','company','blog','location','description'])
     return final_output
     
-# 4. Insert url to get details
+# 4. Scrape information using HTML scrapper
 
 
 

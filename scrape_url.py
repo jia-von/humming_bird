@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, inspect
 from sql_alchemy import db_connection
 
 # Setup variables
-api_url = 'https://api.github.com/organizations?per_page=100'
+api_url = 'https://api.github.com/organizations?per_page=100&since=104472'
 i = 0
 
 # create sqlalchemy engine, connect using psycopg2
