@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Identity
 from sql_alchemy import db_connection
 
@@ -11,11 +12,15 @@ metadata_obj = MetaData()
 # Instiate Table using MetaData via sqlalchemy
 meta_github_url = Table('github_url',metadata_obj,autoload=True,autoload_with=engine)
 meta_org_table = Table('organisations', metadata_obj,
-                Column('org_id', Integer, Identity()),
-                Column('org_name', String(40), nullable=False),
-                Column('org_web', String(250), nullable=True),
+                Column('org_id', Integer, nullable=False),
+                Column('org_login', String(40), nullable=False),
+                Column('org_name', String(80), nullable=True),
+                Column('org_company', String(80), nullable=True),
+                Column('org_description', String(250), nullable=True),
+                Column('org_blog', String(250), nullable=True),
+                Column('org_twitter', String(50), nullable=True),
                 Column('org_email', String(250), nullable=True),
-                Column('org_location', String(250))
+                Column('org_location', String(250), nullable=True)
                 )
 
 # Create table if does not exist
